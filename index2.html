@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>可愛散步小遊戲完整版</title>
+<title>🎃</title>
 <style>
     body {
         margin: 0;
         overflow: hidden;
-        background: linear-gradient(#a3d9a5, #ffffff);
+        background: #000;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
     #gameCanvas {
-        background: url('assets/grass_bg.png') repeat;
+        background: url('assets2/grass_bg.png') repeat;
         background-size: cover;
         width: 100%;
         height: 80vh;
@@ -50,21 +50,29 @@
     <button onclick="moveRight()">→</button>
 </div>
 
-<audio id="bgm" src="assets/bgm.mp3" loop></audio>
+<audio id="bgm" src="assets2/bgm.mp3" loop></audio>
 
 <script>
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 let character = new Image();
-character.src = 'assets/character.png';
+character.src = 'assets2/character.png';
 let tree = new Image();
-tree.src = 'assets/tree.png';
+tree.src = 'assets2/tree.png';
+let tree2 = new Image();
+tree2.src = 'assets2/tree2.png';
 let bgm = document.getElementById('bgm');
 let x = 100;
-let y = 300;
-let speed = 5;
+let y = 430;
+let speed = 7.5;
 let dialogueShown = false;
 let bgmPlayed = false;
+let treeX = canvas.width / 2 + 40;
+let treeDirection = 1;
+let treeMoveDistance = 0;
+let currentTreeImage = tree;
+let leftWallDialogueCooldown = false;
+let needToShowWallDialogue = false;
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.8;
@@ -72,15 +80,79 @@ canvas.height = window.innerHeight * 0.8;
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(character, x, y, 80, 80);
-    ctx.drawImage(tree, canvas.width/2 - 40, 250, 80, 80);
+    ctx.drawImage(currentTreeImage, treeX + treeMoveDistance, 410, 80, 80);
 
-    if (x > canvas.width/2 - 60 && x < canvas.width/2 + 20 && !dialogueShown) {
-        setTimeout(showDialogue, 300);
-        dialogueShown = true;
+    // 角色靠近樹就觸發對話
+    if (x > (treeX + treeMoveDistance - 20) && x < (treeX + treeMoveDistance + 60)) {
+        if (!dialogueShown) {
+            setTimeout(showDialogue, 300);
+            dialogueShown = true;
+        }
+    } else {
+        dialogueShown = false; // 角色離開樹範圍，自動重置，可以再次觸發
     }
 }
 
-// 手動觸發背景音樂播放
+
+function animateTree() {
+    treeMoveDistance += treeDirection * 0.5;
+    if (treeMoveDistance > 3 || treeMoveDistance < -3) {
+        treeDirection *= -1;
+    }
+    draw();
+    requestAnimationFrame(animateTree);
+}
+
+function randomTreeEffect() {
+    setTimeout(() => {
+        currentTreeImage = tree2;
+        draw();
+        setTimeout(() => {
+            currentTreeImage = tree;
+            draw();
+            setTimeout(() => {
+                currentTreeImage = tree2;
+                draw();
+                setTimeout(() => {
+                    currentTreeImage = tree;
+                    draw();
+                    setTimeout(() => {
+                        currentTreeImage = tree2;
+                        draw();
+                        setTimeout(() => {
+                            currentTreeImage = tree;
+                            draw();
+                            randomTreeEffect();
+                        }, 250);
+                    }, 250);
+                }, 250);
+            }, 250);
+        }, 250);
+    }, Math.random() * 2000 + 2000);
+}
+
+function randomBgEffect() {
+    setTimeout(() => {
+        canvas.style.backgroundImage = "url('assets2/grass_bg2.png')";
+        setTimeout(() => {
+            canvas.style.backgroundImage = "url('assets2/grass_bg.png')";
+            setTimeout(() => {
+                canvas.style.backgroundImage = "url('assets2/grass_bg2.png')";
+                setTimeout(() => {
+                    canvas.style.backgroundImage = "url('assets2/grass_bg.png')";
+                    setTimeout(() => {
+                        canvas.style.backgroundImage = "url('assets2/grass_bg2.png')";
+                        setTimeout(() => {
+                            canvas.style.backgroundImage = "url('assets2/grass_bg.png')";
+                            randomBgEffect();
+                        }, 250);
+                    }, 250);
+                }, 250);
+            }, 250);
+        }, 250);
+    }, Math.random() * 2000 + 2000);
+}
+
 function playBGM() {
     if (!bgmPlayed) {
         bgm.play();
@@ -91,7 +163,16 @@ function playBGM() {
 function moveLeft() {
     playBGM();
     x -= speed;
-    if (x < 0) x = 0;
+    if (x <= 0) {
+        x = 0;
+        if (!leftWallDialogueCooldown) {
+            leftWallDialogueCooldown = true;
+            needToShowWallDialogue = true;
+            setTimeout(() => {
+                leftWallDialogueCooldown = false;
+            }, 3000);
+        }
+    }
     draw();
 }
 
@@ -103,15 +184,29 @@ function moveRight() {
 }
 
 function showDialogue() {
-    let choice = confirm("你遇到一隻迷路的小貓咪！\n要抱起來帶走嗎？\n(確定=抱走 / 取消=幫牠找主人)");
+    let choice = confirm("你遇到一隻迷路的相機怪人了！\n要跟他聊天嗎？\n(確定=阿哩喜勒靠 / 取消=快步逃跑)");
     if (choice) {
-        alert("你抱著小貓咪一起回家了！幸福結局🎉");
+        alert("即將前往下一張地圖👻");
     } else {
-        alert("你幫牠找到了主人！你也交到了一個新朋友🎉");
+        alert("沒有這個選擇🤡");
     }
 }
 
+function gameLoop() {
+    if (needToShowWallDialogue) {
+        needToShowWallDialogue = false;
+        alert("沒這麼容易給你逃走！");
+    }
+    requestAnimationFrame(gameLoop);
+}
+
+// 啟動
+
 draw();
+animateTree();
+randomTreeEffect();
+randomBgEffect();
+gameLoop();
 </script>
 
 </body>
