@@ -55,8 +55,18 @@
 <script>
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+
+
+// 角色圖
 let character = new Image();
 character.src = 'assets2/character.png';
+let character2 = new Image();
+character2.src = 'assets2/character2.png';
+let currentCharacterImage = character;  // ✨目前顯示的角色圖
+
+
+
+
 let tree = new Image();
 tree.src = 'assets2/tree.png';
 let tree2 = new Image();
@@ -153,6 +163,18 @@ function randomTreeEffect() {
             }, 250);
         }, 250);
     }, Math.random() * 2000 + 2000);
+}
+
+function randomCharacterEffect() {
+    setTimeout(() => {
+        currentCharacterImage = character2;
+        draw();
+        setTimeout(() => {
+            currentCharacterImage = character;
+            draw();
+            randomCharacterEffect(); // 無限循環
+        }, 500); // 閃一下的時間
+    }, Math.random() * 3000 + 2000); // 隨機2~5秒閃一次
 }
 
 function randomBgEffect() {
