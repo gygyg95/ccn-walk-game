@@ -57,15 +57,11 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 let character = new Image();
 character.src = 'assets2/character.png';
-let character2 = new Image(); // ✨ 新增角色2
-character2.src = 'assets2/character2.png';
-
 let tree = new Image();
 tree.src = 'assets2/tree.png';
 let tree2 = new Image();
 tree2.src = 'assets2/tree2.png';
 let bgm = document.getElementById('bgm');
-
 let x = 100;
 let y = 390;
 let speed = 7.5;
@@ -78,27 +74,27 @@ let currentTreeImage = tree;
 let leftWallDialogueCooldown = false;
 let needToShowWallDialogue = false;
 let treeY = 250;
-let isTypingMessage = false;
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.8;
 
 function dropTree(callback) {
     const targetY = 410;
-    const duration = 800; // ✨ 降落時間（ms）正確設定
+    const duration = 8; // 1秒
     const startY = treeY;
     const startTime = performance.now();
 
     function animateDrop(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
+
         treeY = startY + (targetY - startY) * progress;
         draw();
 
         if (progress < 1) {
             requestAnimationFrame(animateDrop);
         } else {
-            callback();
+            callback(); // ✨ 下降完成後，執行callback（=啟動左右搖）
         }
     }
 
@@ -107,21 +103,20 @@ function dropTree(callback) {
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    ctx.drawImage(character, x, y, 80, 80);               // 角色1
-    ctx.drawImage(character2, x + 100, y, 80, 80);         // 角色2（偏右100px）
-
+    ctx.drawImage(character, x, y, 80, 80);
     ctx.drawImage(currentTreeImage, treeX + treeMoveDistance, treeY, 80, 80);
 
-    if (!isTypingMessage && x > (treeX + treeMoveDistance - 20) && x < (treeX + treeMoveDistance + 60)) {
+    // 角色靠近樹就觸發對話
+    if (x > (treeX + treeMoveDistance - 20) && x < (treeX + treeMoveDistance + 60)) {
         if (!dialogueShown) {
             setTimeout(showDialogue, 300);
             dialogueShown = true;
         }
     } else {
-        dialogueShown = false;
+        dialogueShown = false; // 角色離開樹範圍，自動重置，可以再次觸發
     }
 }
+
 
 function animateTree() {
     treeMoveDistance += treeDirection * 0.5;
@@ -129,7 +124,7 @@ function animateTree() {
         treeDirection *= -1;
     }
     draw();
-    requestAnimationFrame(animateTree);
+    requestAnimationFrame(animateTree); // ✨ 注意只自己呼叫自己
 }
 
 function randomTreeEffect() {
@@ -213,7 +208,7 @@ function moveRight() {
 }
 
 function showDialogue() {
-    let choice = confirm("你又遇到一隻迷路的怪人了！\n要跟他聊天嗎？\n(確定=喜勒衝幹 / 取消=快步逃跑)");
+    let choice = confirm("你又遇到一隻迷路的怪人了！\n要跟他聊天嗎？\n(確定=喜勒衝幹 / 取消=快步逃跑)"); 
     if (choice) {
         alert("你現在有三個願望🕯️");
         setTimeout(() => {
@@ -225,14 +220,14 @@ function showDialogue() {
                     setTimeout(() => {
                         alert("我也有一些話想說呢");
                         setTimeout(() => {
-                            showTypingMessage(`嘿📑🐟生日快樂啊🎂🎉～
-希望妳可以一直平平安安，快快樂樂。
-我知道妳是偶爾會半夜破房的人，所以真的有壓力的時候，要好好地釋放，不要一個人悶著。
-同時呢也要記得，相信自己。妳是我認識的人裡，最認真最棒的那一個。
-在這裡默默祝福妳，新的一年也要繼續帥氣、繼續開心，也可以偶爾…偷懶一下沒關係。
-晚點有空再來吵妳，今天是妳的專屬光環日～✌️`);
-                        }, 50);
-                    }, 50);
+                            showTypingMessage(嘿📑🐟生日快樂啊🎂🎉～
+                                                希望妳可以一直平平安安，快快樂樂。
+                                                我知道妳是偶爾會半夜破房的人，所以真的有壓力的時候，要好好地釋放，不要一個人悶著。
+                                                同時呢也要記得，相信自己。妳是我認識的人裡，最認真最棒的那一個。
+                                                在這裡默默祝福妳，新的一年也要繼續帥氣、繼續開心，也可以偶爾…偷懶一下沒關係。
+                                                晚點有空再來吵妳，今天是妳的專屬光環日～✌️);
+                        }, 50); // 小停頓再打字機效果
+                    }, 50); // 小停頓再打字機效果
                 }, 50);
             }, 50);
         }, 50);
@@ -241,8 +236,10 @@ function showDialogue() {
     }
 }
 
+// 打字機效果函數
 function showTypingMessage(message) {
-    isTypingMessage = true;
+    isTypingMessage = true;  // ✨ 打字期間鎖住互動
+
     const typingDiv = document.createElement('div');
     typingDiv.style.position = 'fixed';
     typingDiv.style.top = '40%';
@@ -259,7 +256,7 @@ function showTypingMessage(message) {
     typingDiv.style.maxWidth = '500px';
     typingDiv.style.whiteSpace = 'pre-wrap';
     typingDiv.style.lineHeight = '1.5';
-    typingDiv.style.transition = 'opacity 1s ease';
+    typingDiv.style.transition = 'opacity 1s ease'; // ✨ 淡出動畫
     document.body.appendChild(typingDiv);
 
     let index = 0;
@@ -270,11 +267,11 @@ function showTypingMessage(message) {
         } else {
             clearInterval(interval);
             setTimeout(() => {
-                typingDiv.style.opacity = '0';
+                typingDiv.style.opacity = '0'; // ✨ 觸發淡出
                 setTimeout(() => {
-                    typingDiv.remove();
-                    spawnHearts();
-                    isTypingMessage = false;
+                    typingDiv.remove();          // ✨ 淡出完刪除元素
+                    spawnHearts();               // ✨ 淡出完觸發小愛心
+                    isTypingMessage = false;     // ✨ 解除鎖定
                 }, 1000);
             }, 1000);
         }
@@ -282,24 +279,24 @@ function showTypingMessage(message) {
 }
 
 function spawnHearts() {
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 20; i++) {  // ✨ 產生20個愛心
         const heart = document.createElement('div');
         heart.textContent = '❤️';
         heart.style.position = 'fixed';
         heart.style.left = '50%';
         heart.style.top = '50%';
         heart.style.transform = 'translate(-50%, -50%)';
-        heart.style.fontSize = `${Math.random() * 20 + 20}px`;
+        heart.style.fontSize = ${Math.random() * 20 + 20}px; // 20~40px隨機大小
         heart.style.opacity = '1';
         heart.style.transition = 'all 2s ease';
         heart.style.zIndex = '9999';
         document.body.appendChild(heart);
 
-        const randomX = (Math.random() - 0.5) * 200;
-        const randomY = -(Math.random() * 300 + 200);
+        const randomX = (Math.random() - 0.5) * 200; // 左右飄
+        const randomY = -(Math.random() * 300 + 200); // 往上飄
 
         setTimeout(() => {
-            heart.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            heart.style.transform = translate(${randomX}px, ${randomY}px);
             heart.style.opacity = '0';
         }, 100);
 
@@ -309,19 +306,21 @@ function spawnHearts() {
     }
 }
 
+
 function gameLoop() {
     if (needToShowWallDialogue) {
         needToShowWallDialogue = false;
         alert("就這麼想回去上個地圖啊！");
-        window.location.href = "index.html";
+        window.location.href = "index.html"; // ✨ 加這行轉跳！
     }
     requestAnimationFrame(gameLoop);
 }
 
 // 啟動
+
 draw();
 dropTree(() => {
-    animateTree();
+    animateTree();  // 樹下降完，開始搖動
 });
 randomTreeEffect();
 randomBgEffect();
