@@ -208,7 +208,7 @@ function moveRight() {
 }
 
 function showDialogue() {
-    let choice = confirm("你遇到一隻迷路的怪人了！\n要跟他聊天嗎？\n(確定=阿哩喜勒靠 / 取消=快步逃跑)"); 
+    let choice = confirm("你又遇到一隻迷路的怪人了！\n要跟他聊天嗎？\n( / 取消=快步逃跑)"); 
     if (choice) {
         alert("你現在有三個願望🕯️");
         setTimeout(() => {
@@ -238,6 +238,8 @@ function showDialogue() {
 
 // 打字機效果函數
 function showTypingMessage(message) {
+    isTypingMessage = true;  // ✨ 打字期間鎖住互動
+
     const typingDiv = document.createElement('div');
     typingDiv.style.position = 'fixed';
     typingDiv.style.top = '40%';
@@ -250,10 +252,11 @@ function showTypingMessage(message) {
     typingDiv.style.fontFamily = 'monospace';
     typingDiv.style.color = '#000';
     typingDiv.style.zIndex = '9999';
-    typingDiv.style.width = '80%';          // ✨ 加這行：自適應寬度
-    typingDiv.style.maxWidth = '500px';     // ✨ 加這行：限制最大寬
-    typingDiv.style.whiteSpace = 'pre-wrap'; // ✨ 加這行：文字保留換行
-    typingDiv.style.lineHeight = '1.5';      // ✨ 字距更舒服
+    typingDiv.style.width = '80%';
+    typingDiv.style.maxWidth = '500px';
+    typingDiv.style.whiteSpace = 'pre-wrap';
+    typingDiv.style.lineHeight = '1.5';
+    typingDiv.style.transition = 'opacity 1s ease'; // ✨ 加上淡出動畫設定
     document.body.appendChild(typingDiv);
 
     let index = 0;
@@ -263,9 +266,17 @@ function showTypingMessage(message) {
             index++;
         } else {
             clearInterval(interval);
+            setTimeout(() => {
+                typingDiv.style.opacity = '0'; // ✨ 觸發淡出
+                setTimeout(() => {
+                    typingDiv.remove();          // ✨ 淡出完刪掉元素
+                    isTypingMessage = false;     // ✨ 解除鎖定
+                }, 1000); // 等1秒（跟transition一樣）才真正刪除
+            }, 1000); // 打完字後停留1秒再開始淡出
         }
     }, 100);
 }
+
 
 function gameLoop() {
     if (needToShowWallDialogue) {
