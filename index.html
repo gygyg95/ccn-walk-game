@@ -57,11 +57,14 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 let character = new Image();
 character.src = 'assets/character.png';
+let character2 = new Image();
+character2.src = 'assets/character2.png'; // ✨ 新增角色2
 let tree = new Image();
 tree.src = 'assets/tree.png';
 let tree2 = new Image();
 tree2.src = 'assets/tree2.png';
 let bgm = document.getElementById('bgm');
+
 let x = 100;
 let y = 430;
 let speed = 7.5;
@@ -79,20 +82,21 @@ canvas.height = window.innerHeight * 0.8;
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(character, x, y, 80, 80);
-    ctx.drawImage(currentTreeImage, treeX + treeMoveDistance, 410, 80, 80);
 
-    // 角色靠近樹就觸發對話
+    ctx.drawImage(character, x, y, 80, 80);              // 畫角色1
+    ctx.drawImage(character2, x + 100, y, 80, 80);        // 畫角色2（右邊100px）
+
+    ctx.drawImage(currentTreeImage, treeX + treeMoveDistance, 410, 80, 80); // 畫樹
+
     if (x > (treeX + treeMoveDistance - 20) && x < (treeX + treeMoveDistance + 60)) {
         if (!dialogueShown) {
             setTimeout(showDialogue, 300);
             dialogueShown = true;
         }
     } else {
-        dialogueShown = false; // 角色離開樹範圍，自動重置，可以再次觸發
+        dialogueShown = false;
     }
 }
-
 
 function animateTree() {
     treeMoveDistance += treeDirection * 0.5;
@@ -202,7 +206,6 @@ function gameLoop() {
 }
 
 // 啟動
-
 draw();
 animateTree();
 randomTreeEffect();
