@@ -67,7 +67,7 @@ let dialogueShown = false;
 let bgmPlayed = false;
 
 // 樹的初始位置
-let treeX = canvas.width / 2 + 10;
+let treeX = canvas.width / 2 + 40;
 let treeDirection = 1; // 移動方向 (1=右, -1=左)
 let treeMoveDistance = 0; // 目前移動距離
 
@@ -87,7 +87,7 @@ function draw() {
 
 // 讓樹左右擺動20像素
 function animateTree() {
-    treeMoveDistance += treeDirection;
+    treeMoveDistance += treeDirection * 0.5;
     if (treeMoveDistance > 3 || treeMoveDistance < -3) {
         treeDirection *= -1; // 改變方向
     }
