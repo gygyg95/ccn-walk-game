@@ -124,6 +124,28 @@ function randomTreeEffect() {
     }, Math.random() * 2000 + 2000);
 }
 
+function randomBgEffect() {
+    setTimeout(() => {
+        canvas.style.backgroundImage = "url('assets/grass_bg2.png')";
+        setTimeout(() => {
+            canvas.style.backgroundImage = "url('assets/grass_bg.png')";
+            setTimeout(() => {
+                canvas.style.backgroundImage = "url('assets/grass_bg2.png')";
+                setTimeout(() => {
+                    canvas.style.backgroundImage = "url('assets/grass_bg.png')";
+                    setTimeout(() => {
+                        canvas.style.backgroundImage = "url('assets/grass_bg2.png')";
+                        setTimeout(() => {
+                            canvas.style.backgroundImage = "url('assets/grass_bg.png')";
+                            randomBgEffect();
+                        }, 250);
+                    }, 250);
+                }, 250);
+            }, 250);
+        }, 250);
+    }, Math.random() * 2000 + 2000);
+}
+
 function playBGM() {
     if (!bgmPlayed) {
         bgm.play();
@@ -157,6 +179,7 @@ function showDialogue() {
 draw();
 animateTree();
 randomTreeEffect();
+randomBgEffect();
 </script>
 
 </body>
