@@ -66,18 +66,33 @@ let speed = 5;
 let dialogueShown = false;
 let bgmPlayed = false;
 
+// 樹的初始位置
+let treeX = canvas.width / 2 - 40;
+let treeDirection = 1; // 移動方向 (1=右, -1=左)
+let treeMoveDistance = 0; // 目前移動距離
+
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.8;
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(character, x, y, 80, 80);
-    ctx.drawImage(tree, canvas.width/2 - 40, 430, 80, 80);
+    ctx.drawImage(tree, treeX + treeMoveDistance, 430, 80, 80);
 
-    if (x > canvas.width/2 - 60 && x < canvas.width/2 + 20 && !dialogueShown) {
+    if (x > (treeX + treeMoveDistance - 20) && x < (treeX + treeMoveDistance + 60) && !dialogueShown) {
         setTimeout(showDialogue, 300);
         dialogueShown = true;
     }
+}
+
+// 讓樹左右擺動20像素
+function animateTree() {
+    treeMoveDistance += treeDirection;
+    if (treeMoveDistance > 20 || treeMoveDistance < -20) {
+        treeDirection *= -1; // 改變方向
+    }
+    draw();
+    requestAnimationFrame(animateTree);
 }
 
 // 手動觸發背景音樂播放
@@ -112,6 +127,7 @@ function showDialogue() {
 }
 
 draw();
+animateTree(); // 開始樹的左右移動動畫
 </script>
 
 </body>
