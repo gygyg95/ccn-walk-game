@@ -256,7 +256,7 @@ function showTypingMessage(message) {
     typingDiv.style.maxWidth = '500px';
     typingDiv.style.whiteSpace = 'pre-wrap';
     typingDiv.style.lineHeight = '1.5';
-    typingDiv.style.transition = 'opacity 1s ease'; // ✨ 加上淡出動畫設定
+    typingDiv.style.transition = 'opacity 1s ease'; // ✨ 淡出動畫
     document.body.appendChild(typingDiv);
 
     let index = 0;
@@ -269,12 +269,41 @@ function showTypingMessage(message) {
             setTimeout(() => {
                 typingDiv.style.opacity = '0'; // ✨ 觸發淡出
                 setTimeout(() => {
-                    typingDiv.remove();          // ✨ 淡出完刪掉元素
+                    typingDiv.remove();          // ✨ 淡出完刪除元素
+                    spawnHearts();               // ✨ 淡出完觸發小愛心
                     isTypingMessage = false;     // ✨ 解除鎖定
-                }, 1000); // 等1秒（跟transition一樣）才真正刪除
-            }, 1000); // 打完字後停留1秒再開始淡出
+                }, 1000);
+            }, 1000);
         }
     }, 100);
+}
+
+function spawnHearts() {
+    for (let i = 0; i < 20; i++) {  // ✨ 產生20個愛心
+        const heart = document.createElement('div');
+        heart.textContent = '❤️';
+        heart.style.position = 'fixed';
+        heart.style.left = '50%';
+        heart.style.top = '50%';
+        heart.style.transform = 'translate(-50%, -50%)';
+        heart.style.fontSize = `${Math.random() * 20 + 20}px`; // 20~40px隨機大小
+        heart.style.opacity = '1';
+        heart.style.transition = 'all 2s ease';
+        heart.style.zIndex = '9999';
+        document.body.appendChild(heart);
+
+        const randomX = (Math.random() - 0.5) * 200; // 左右飄
+        const randomY = -(Math.random() * 300 + 200); // 往上飄
+
+        setTimeout(() => {
+            heart.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            heart.style.opacity = '0';
+        }, 100);
+
+        setTimeout(() => {
+            heart.remove();
+        }, 2100);
+    }
 }
 
 
