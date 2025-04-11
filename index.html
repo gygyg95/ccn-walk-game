@@ -46,8 +46,8 @@
 
 <canvas id="gameCanvas"></canvas>
 <div class="controls">
-    <button onmousedown="startMoveLeft()" onmouseup="stopMove()" ontouchstart="startMoveLeft()" ontouchend="stopMove()">←</button>
-    <button onmousedown="startMoveRight()" onmouseup="stopMove()" ontouchstart="startMoveRight()" ontouchend="stopMove()">→</button>
+    <button onclick="moveLeft()">←</button>
+    <button onclick="moveRight()">→</button>
 </div>
 
 <audio id="bgm" src="assets/bgm.mp3" loop></audio>
@@ -65,6 +65,7 @@ let bgm = document.getElementById('bgm');
 let x = 100;
 let y = 430;
 let speed = 7.5;
+let dialogueShown = false;
 let bgmPlayed = false;
 let treeX = canvas.width / 2 + 40;
 let treeDirection = 1;
@@ -72,9 +73,6 @@ let treeMoveDistance = 0;
 let currentTreeImage = tree;
 let leftWallDialogueCooldown = false;
 let needToShowWallDialogue = false;
-let moveDirection = 0; // -1: left, 1: right, 0: no move
-let nearTree = false;  // 是否靠近樹
-let treeDialogueCooldown = false; // 樹的對話冷卻
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.8;
@@ -84,15 +82,9 @@ function draw() {
     ctx.drawImage(character, x, y, 80, 80);
     ctx.drawImage(currentTreeImage, treeX + treeMoveDistance, 410, 80, 80);
 
-    // 檢查是否靠近樹
-    if (x > (treeX + treeMoveDistance - 20) && x < (treeX + treeMoveDistance + 60)) {
-        if (!treeDialogueCooldown) {
-            treeDialogueCooldown = true;
-            setTimeout(() => {
-                showDialogue();
-                treeDialogueCooldown = false;
-            }, 300); // 小延遲避免太密集觸發
-        }
+    if (x > (treeX + treeMoveDistance - 20) && x < (treeX + treeMoveDistance + 60) && !dialogueShown) {
+        setTimeout(showDialogue, 300);
+        dialogueShown = true;
     }
 }
 
@@ -162,18 +154,27 @@ function playBGM() {
     }
 }
 
-function startMoveLeft() {
+function moveLeft() {
     playBGM();
-    moveDirection = -1;
+    x -= speed;
+    if (x <= 0) {
+        x = 0;
+        if (!leftWallDialogueCooldown) {
+            leftWallDialogueCooldown = true;
+            needToShowWallDialogue = true;
+            setTimeout(() => {
+                leftWallDialogueCooldown = false;
+            }, 3000);
+        }
+    }
+    draw();
 }
 
-function startMoveRight() {
+function moveRight() {
     playBGM();
-    moveDirection = 1;
-}
-
-function stopMove() {
-    moveDirection = 0;
+    x += speed;
+    if (x > canvas.width - 80) x = canvas.width - 80;
+    draw();
 }
 
 function showDialogue() {
@@ -186,29 +187,15 @@ function showDialogue() {
 }
 
 function gameLoop() {
-    if (moveDirection === -1) {
-        x -= speed;
-        if (x <= 0) {
-            x = 0;
-            if (!leftWallDialogueCooldown) {
-                leftWallDialogueCooldown = true;
-                alert("沒這麼容易給你逃走！");
-                setTimeout(() => {
-                    leftWallDialogueCooldown = false;
-                }, 3000);
-            }
-        }
+    if (needToShowWallDialogue) {
+        needToShowWallDialogue = false;
+        alert("沒這麼容易給你逃走！");
     }
-    if (moveDirection === 1) {
-        x += speed;
-        if (x > canvas.width - 80) x = canvas.width - 80;
-    }
-
-    draw();
     requestAnimationFrame(gameLoop);
 }
 
 // 啟動
+
 draw();
 animateTree();
 randomTreeEffect();
