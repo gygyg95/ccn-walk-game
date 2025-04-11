@@ -74,14 +74,13 @@ let currentTreeImage = tree;
 let leftWallDialogueCooldown = false;
 let needToShowWallDialogue = false;
 let treeY = 250;
-let isTypingMessage = false;
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.8;
 
 function dropTree(callback) {
     const targetY = 410;
-    const duration = 3; // 1秒
+    const duration = 8; // 1秒
     const startY = treeY;
     const startTime = performance.now();
 
@@ -109,14 +108,13 @@ function draw() {
 
     // 角色靠近樹就觸發對話
     if (x > (treeX + treeMoveDistance - 20) && x < (treeX + treeMoveDistance + 60)) {
-    if (!dialogueShown && !isTypingMessage) {  // ✨ 加一個判斷！
-        setTimeout(showDialogue, 300);
-        dialogueShown = true;
+        if (!dialogueShown) {
+            setTimeout(showDialogue, 300);
+            dialogueShown = true;
+        }
+    } else {
+        dialogueShown = false; // 角色離開樹範圍，自動重置，可以再次觸發
     }
-} else {
-    dialogueShown = false;
-}
-
 }
 
 
@@ -222,12 +220,12 @@ function showDialogue() {
                     setTimeout(() => {
                         alert("我也有一些話想說呢");
                         setTimeout(() => {
-                            showTypingMessage(嘿📑🐟生日快樂啊🎂🎉～
+                            showTypingMessage(`嘿📑🐟生日快樂啊🎂🎉～
                                                 希望妳可以一直平平安安，快快樂樂。
                                                 我知道妳是偶爾會半夜破房的人，所以真的有壓力的時候，要好好地釋放，不要一個人悶著。
                                                 同時呢也要記得，相信自己。妳是我認識的人裡，最認真最棒的那一個。
                                                 在這裡默默祝福妳，新的一年也要繼續帥氣、繼續開心，也可以偶爾…偷懶一下沒關係。
-                                                晚點有空再來吵妳，今天是妳的專屬光環日～✌️);
+                                                晚點有空再來吵妳，今天是妳的專屬光環日～✌️`);
                         }, 50); // 小停頓再打字機效果
                     }, 50); // 小停頓再打字機效果
                 }, 50);
@@ -240,7 +238,7 @@ function showDialogue() {
 
 // 打字機效果函數
 function showTypingMessage(message) {
-    isTypingMessage = true;  // ✨ 一開始進來就鎖住
+    isTypingMessage = true;  // ✨ 打字期間鎖住互動
 
     const typingDiv = document.createElement('div');
     typingDiv.style.position = 'fixed';
@@ -258,6 +256,7 @@ function showTypingMessage(message) {
     typingDiv.style.maxWidth = '500px';
     typingDiv.style.whiteSpace = 'pre-wrap';
     typingDiv.style.lineHeight = '1.5';
+    typingDiv.style.transition = 'opacity 1s ease'; // ✨ 淡出動畫
     document.body.appendChild(typingDiv);
 
     let index = 0;
@@ -267,9 +266,44 @@ function showTypingMessage(message) {
             index++;
         } else {
             clearInterval(interval);
-            isTypingMessage = false;  // ✨ 打完字就解除鎖住
+            setTimeout(() => {
+                typingDiv.style.opacity = '0'; // ✨ 觸發淡出
+                setTimeout(() => {
+                    typingDiv.remove();          // ✨ 淡出完刪除元素
+                    spawnHearts();               // ✨ 淡出完觸發小愛心
+                    isTypingMessage = false;     // ✨ 解除鎖定
+                }, 1000);
+            }, 1000);
         }
     }, 100);
+}
+
+function spawnHearts() {
+    for (let i = 0; i < 20; i++) {  // ✨ 產生20個愛心
+        const heart = document.createElement('div');
+        heart.textContent = '❤️';
+        heart.style.position = 'fixed';
+        heart.style.left = '50%';
+        heart.style.top = '50%';
+        heart.style.transform = 'translate(-50%, -50%)';
+        heart.style.fontSize = `${Math.random() * 20 + 20}px`; // 20~40px隨機大小
+        heart.style.opacity = '1';
+        heart.style.transition = 'all 2s ease';
+        heart.style.zIndex = '9999';
+        document.body.appendChild(heart);
+
+        const randomX = (Math.random() - 0.5) * 200; // 左右飄
+        const randomY = -(Math.random() * 300 + 200); // 往上飄
+
+        setTimeout(() => {
+            heart.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            heart.style.opacity = '0';
+        }, 100);
+
+        setTimeout(() => {
+            heart.remove();
+        }, 2100);
+    }
 }
 
 
