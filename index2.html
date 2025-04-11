@@ -90,7 +90,7 @@ canvas.height = window.innerHeight * 0.8;
 
 function dropTree(callback) {
     const targetY = 410;
-    const duration = 5000; // 1秒
+    const duration = 3000; // 1秒
     const startY = treeY;
     const startTime = performance.now();
 
@@ -346,6 +346,7 @@ dropTree(() => {
 });
 randomTreeEffect();
 randomBgEffect();
+randomCharacterEffect(); // ✨ 新加這行，讓角色可以隨機閃現
 gameLoop();
 </script>
 
