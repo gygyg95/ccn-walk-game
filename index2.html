@@ -84,6 +84,8 @@ let currentTreeImage = tree;
 let leftWallDialogueCooldown = false;
 let needToShowWallDialogue = false;
 let treeY = 250;
+let storyLocked = false; // ✨ 劇情鎖，聊天後開啟
+
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.8;
@@ -118,13 +120,14 @@ function draw() {
 
     // 角色靠近樹就觸發對話
     if (x > (treeX + treeMoveDistance - 20) && x < (treeX + treeMoveDistance + 60)) {
-        if (!dialogueShown) {
-            setTimeout(showDialogue, 300);
-            dialogueShown = true;
-        }
-    } else {
-        dialogueShown = false; // 角色離開樹範圍，自動重置，可以再次觸發
+    if (!dialogueShown && !storyLocked) { // ✨ 加一個storyLocked判斷！
+        setTimeout(showDialogue, 300);
+        dialogueShown = true;
     }
+} else {
+    dialogueShown = false;
+}
+
 }
 
 
@@ -232,6 +235,7 @@ function moveRight() {
 function showDialogue() {
     let choice = confirm("你又遇到一隻迷路的怪人了！\n要跟他聊天嗎？\n(確定=喜勒衝幹 / 取消=快步逃跑)"); 
     if (choice) {
+        storyLocked = true; 
         alert("你現在有三個願望🕯️");
         setTimeout(() => {
             alert("說出你第一個的願望吧");
