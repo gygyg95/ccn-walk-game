@@ -82,11 +82,17 @@ function draw() {
     ctx.drawImage(character, x, y, 80, 80);
     ctx.drawImage(currentTreeImage, treeX + treeMoveDistance, 410, 80, 80);
 
-    if (x > (treeX + treeMoveDistance - 20) && x < (treeX + treeMoveDistance + 60) && !dialogueShown) {
-        setTimeout(showDialogue, 300);
-        dialogueShown = true;
+    // 角色靠近樹就觸發對話
+    if (x > (treeX + treeMoveDistance - 20) && x < (treeX + treeMoveDistance + 60)) {
+        if (!dialogueShown) {
+            setTimeout(showDialogue, 300);
+            dialogueShown = true;
+        }
+    } else {
+        dialogueShown = false; // 角色離開樹範圍，自動重置，可以再次觸發
     }
 }
+
 
 function animateTree() {
     treeMoveDistance += treeDirection * 0.5;
