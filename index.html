@@ -65,6 +65,7 @@ let bgm = document.getElementById('bgm');
 let x = 100;
 let y = 430;
 let speed = 5;
+let moveDirection = 0; // -1 左移, 1 右移, 0 不動
 let dialogueShown = false;
 let bgmPlayed = false;
 let treeX = canvas.width / 2 + 40;
@@ -87,15 +88,43 @@ function draw() {
     }
 }
 
-function animateTree() {
+function updatePosition() {
+    if (moveDirection === -1) {
+        x -= speed;
+        if (x < 0) {
+            x = 0;
+            if (!leftWallDialogueCooldown) {
+                leftWallDialogueCooldown = true;
+                setTimeout(() => {
+                    alert("沒這麼容易給你逃走！");
+                    leftWallDialogueCooldown = false;
+                }, 100);
+            }
+        }
+    } else if (moveDirection === 1) {
+        x += speed;
+        if (x > canvas.width - 80) {
+            x = canvas.width - 80;
+        }
+    }
+}
+
+function gameLoop() {
+    updatePosition();
+    animateTreeMove();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+
+// 原本樹的擺動
+function animateTreeMove() {
     treeMoveDistance += treeDirection * 0.5;
     if (treeMoveDistance > 3 || treeMoveDistance < -3) {
         treeDirection *= -1;
     }
-    draw();
-    requestAnimationFrame(animateTree);
 }
 
+// 樹閃爍效果
 function randomTreeEffect() {
     setTimeout(() => {
         currentTreeImage = tree2;
@@ -124,6 +153,7 @@ function randomTreeEffect() {
     }, Math.random() * 2000 + 2000);
 }
 
+// 背景閃爍效果
 function randomBgEffect() {
     setTimeout(() => {
         canvas.style.backgroundImage = "url('assets/grass_bg2.png')";
@@ -153,27 +183,16 @@ function playBGM() {
     }
 }
 
-function moveLeft() {
+function moveLeftStart() {
     playBGM();
-    x -= speed;
-    if (x < 0) {
-        x = 0;
-        if (!leftWallDialogueCooldown) {
-            leftWallDialogueCooldown = true;
-            setTimeout(() => {
-                alert("沒這麼容易給你逃走！");
-                leftWallDialogueCooldown = false;
-            }, 100);
-        }
-    }
-    draw();
+    moveDirection = -1;
 }
-
-function moveRight() {
+function moveRightStart() {
     playBGM();
-    x += speed;
-    if (x > canvas.width - 80) x = canvas.width - 80;
-    draw();
+    moveDirection = 1;
+}
+function stopMove() {
+    moveDirection = 0;
 }
 
 function showDialogue() {
@@ -185,11 +204,21 @@ function showDialogue() {
     }
 }
 
+// 綁定按鈕事件
+document.querySelector('button:nth-child(1)').addEventListener('mousedown', moveLeftStart);
+document.querySelector('button:nth-child(1)').addEventListener('mouseup', stopMove);
+document.querySelector('button:nth-child(1)').addEventListener('mouseleave', stopMove);
+
+document.querySelector('button:nth-child(2)').addEventListener('mousedown', moveRightStart);
+document.querySelector('button:nth-child(2)').addEventListener('mouseup', stopMove);
+document.querySelector('button:nth-child(2)').addEventListener('mouseleave', stopMove);
+
 draw();
-animateTree();
 randomTreeEffect();
 randomBgEffect();
+gameLoop();
 </script>
+
 
 </body>
 </html>
