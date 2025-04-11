@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -28,13 +30,18 @@
         margin: 10px;
         border-radius: 50%;
         border: none;
-        font-size: 24px;
-        background: #fff;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        font-size: 32px;
+        font-weight: bold;
+        background: #ffffff;
+        box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+        transition: background 0.3s, transform 0.2s;
+    }
+    button:active {
+        background: #e0f7fa;
+        transform: scale(0.95);
     }
 </style>
 </head>
-
 <body>
 
 <canvas id="gameCanvas"></canvas>
@@ -60,26 +67,31 @@ let dialogueShown = false;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.8;
 
+// 繪圖函式
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(character, x, y, 80, 80);
-    ctx.drawImage(tree, canvas.width/2, 250, 80, 80);
+    ctx.drawImage(tree, canvas.width/2 - 40, 250, 80, 80);
 
-    if (x > canvas.width/2 - 40 && x < canvas.width/2 + 40 && !dialogueShown) {
+    if (x > canvas.width/2 - 60 && x < canvas.width/2 + 20 && !dialogueShown) {
         setTimeout(showDialogue, 300);
         dialogueShown = true;
     }
 }
 
+// 移動控制
 function moveLeft() {
     x -= speed;
+    if (x < 0) x = 0;
     draw();
 }
 function moveRight() {
     x += speed;
+    if (x > canvas.width - 80) x = canvas.width - 80;
     draw();
 }
 
+// 劇情觸發
 function showDialogue() {
     let choice = confirm("你遇到一隻迷路的小貓咪！\n要抱起來帶走嗎？\n(確定=抱走 / 取消=幫牠找主人)");
     if (choice) {
