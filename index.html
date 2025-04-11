@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>可愛散步小遊戲</title>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: linear-gradient(#a3d9a5, #ffffff);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    #gameCanvas {
+        background: url('assets/grass_bg.png') repeat;
+        background-size: cover;
+        width: 100%;
+        height: 80vh;
+    }
+    .controls {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+    button {
+        width: 80px;
+        height: 80px;
+        margin: 10px;
+        border-radius: 50%;
+        border: none;
+        font-size: 24px;
+        background: #fff;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+</style>
+</head>
+<body>
+
+<canvas id="gameCanvas"></canvas>
+<div class="controls">
+    <button onclick="moveLeft()">←</button>
+    <button onclick="moveRight()">→</button>
+</div>
+
+<audio id="bgm" src="assets/bgm.mp3" autoplay loop></audio>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let character = new Image();
+character.src = 'assets/character.png';
+let x = 100;
+let y = 300;
+let speed = 5;
+let dialogueShown = false;
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight * 0.8;
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(character, x, y, 80, 80);
+
+    if (x > canvas.width / 2 && !dialogueShown) {
+        setTimeout(showDialogue, 300);
+        dialogueShown = true;
+    }
+}
+
+function moveLeft() {
+    x -= speed;
+    draw();
+}
+function moveRight() {
+    x += speed;
+    draw();
+}
+
+function showDialogue() {
+    let choice = confirm("你遇到一隻迷路的小貓咪！
+要抱起來帶走嗎？
+(確定=抱走 / 取消=幫牠找主人)");
+    if (choice) {
+        alert("你抱著小貓咪一起回家了！幸福結局🎉");
+    } else {
+        alert("你幫牠找到了主人！你也交到了一個新朋友🎉");
+    }
+}
+
+draw();
+</script>
+
+</body>
+</html>
