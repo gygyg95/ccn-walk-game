@@ -184,11 +184,11 @@ function moveRight() {
 }
 
 function showDialogue() {
-    let choice = confirm("你遇到一隻迷路的相機怪人了！\n要跟他聊天嗎？\n(確定=阿哩喜勒靠 / 取消=快步逃跑)");
+    let choice = confirm("你遇到一隻迷路的怪人了！\n要跟他聊天嗎？\n(確定=阿哩喜勒靠 / 取消=快步逃跑)"); 
     if (choice) {
-        alert("即將前往下一張地圖👻");
+        alert("你現在有三個願望🕯️"); 
     } else {
-        alert("沒有這個選擇🤡");
+        alert("拜託聊一下啦💔"); 
     }
 }
 
@@ -196,6 +196,7 @@ function gameLoop() {
     if (needToShowWallDialogue) {
         needToShowWallDialogue = false;
         alert("沒這麼容易給你逃走！");
+        window.location.href = "index.html"; // ✨ 加這行轉跳！
     }
     requestAnimationFrame(gameLoop);
 }
