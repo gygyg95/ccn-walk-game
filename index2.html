@@ -73,14 +73,38 @@ let treeMoveDistance = 0;
 let currentTreeImage = tree;
 let leftWallDialogueCooldown = false;
 let needToShowWallDialogue = false;
+let treeY = 250;
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.8;
 
+function dropTree(callback) {
+    const targetY = 410;
+    const duration = 1000; // 1秒
+    const startY = treeY;
+    const startTime = performance.now();
+
+    function animateDrop(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        treeY = startY + (targetY - startY) * progress;
+        draw();
+
+        if (progress < 1) {
+            requestAnimationFrame(animateDrop);
+        } else {
+            callback(); // ✨ 下降完成後，執行callback（=啟動左右搖）
+        }
+    }
+
+    requestAnimationFrame(animateDrop);
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(character, x, y, 80, 80);
-    ctx.drawImage(currentTreeImage, treeX + treeMoveDistance, 410, 80, 80);
+    ctx.drawImage(currentTreeImage, treeX + treeMoveDistance, treeY, 80, 80);
 
     // 角色靠近樹就觸發對話
     if (x > (treeX + treeMoveDistance - 20) && x < (treeX + treeMoveDistance + 60)) {
@@ -100,7 +124,7 @@ function animateTree() {
         treeDirection *= -1;
     }
     draw();
-    requestAnimationFrame(animateTree);
+    requestAnimationFrame(animateTree); // ✨ 注意只自己呼叫自己
 }
 
 function randomTreeEffect() {
@@ -255,7 +279,9 @@ function gameLoop() {
 // 啟動
 
 draw();
-animateTree();
+dropTree(() => {
+    animateTree();  // 樹下降完，開始搖動
+});
 randomTreeEffect();
 randomBgEffect();
 gameLoop();
