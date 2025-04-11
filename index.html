@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>可愛散步小遊戲完整版</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🥥🐟</title>
 <style>
     body {
         margin: 0;
@@ -30,15 +31,9 @@
         margin: 10px;
         border-radius: 50%;
         border: none;
-        font-size: 32px;
-        font-weight: bold;
-        background: #ffffff;
-        box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-        transition: background 0.3s, transform 0.2s;
-    }
-    button:active {
-        background: #e0f7fa;
-        transform: scale(0.95);
+        font-size: 24px;
+        background: #fff;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 </style>
 </head>
@@ -50,7 +45,7 @@
     <button onclick="moveRight()">→</button>
 </div>
 
-<audio id="bgm" src="assets/bgm.mp3" loop></audio>
+<audio id="bgm" src="assets/bgm.mp3" autoplay loop></audio>
 
 <script>
 const canvas = document.getElementById('gameCanvas');
@@ -59,12 +54,10 @@ let character = new Image();
 character.src = 'assets/character.png';
 let tree = new Image();
 tree.src = 'assets/tree.png';
-let bgm = document.getElementById('bgm');
 let x = 100;
 let y = 300;
 let speed = 5;
 let dialogueShown = false;
-let bgmPlayed = false;
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.8;
@@ -72,42 +65,29 @@ canvas.height = window.innerHeight * 0.8;
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(character, x, y, 80, 80);
-    ctx.drawImage(tree, canvas.width/2 - 40, 250, 80, 80);
+    ctx.drawImage(tree, canvas.width/2, 250, 80, 80);
 
-    if (x > canvas.width/2 - 60 && x < canvas.width/2 + 20 && !dialogueShown) {
+    if (x > canvas.width/2 - 40 && x < canvas.width/2 + 40 && !dialogueShown) {
         setTimeout(showDialogue, 300);
         dialogueShown = true;
     }
 }
 
-// 手動觸發背景音樂播放
-function playBGM() {
-    if (!bgmPlayed) {
-        bgm.play();
-        bgmPlayed = true;
-    }
-}
-
 function moveLeft() {
-    playBGM();
     x -= speed;
-    if (x < 0) x = 0;
     draw();
 }
-
 function moveRight() {
-    playBGM();
     x += speed;
-    if (x > canvas.width - 80) x = canvas.width - 80;
     draw();
 }
 
 function showDialogue() {
-    let choice = confirm("你遇到一隻迷路的小貓咪！\n要抱起來帶走嗎？\n(確定=抱走 / 取消=幫牠找主人)");
+    let choice = confirm("你遇到一隻迷路的相機怪人了！\n要跟他聊天嗎？\n(確定=阿哩喜勒靠 / 取消=快步逃跑)");
     if (choice) {
         alert("你抱著小貓咪一起回家了！幸福結局🎉");
     } else {
-        alert("你幫牠找到了主人！你也交到了一個新朋友🎉");
+        alert("沒有這個選擇🎉");
     }
 }
 
