@@ -63,7 +63,7 @@ let tree2 = new Image();
 tree2.src = 'assets2/tree2.png';
 let bgm = document.getElementById('bgm');
 let x = 100;
-let y = 430;
+let y = 390;
 let speed = 7.5;
 let dialogueShown = false;
 let bgmPlayed = false;
@@ -186,16 +186,56 @@ function moveRight() {
 function showDialogue() {
     let choice = confirm("你遇到一隻迷路的怪人了！\n要跟他聊天嗎？\n(確定=阿哩喜勒靠 / 取消=快步逃跑)"); 
     if (choice) {
-        alert("你現在有三個願望🕯️"); 
+        alert("你現在有三個願望🕯️");
+        setTimeout(() => {
+            alert("說出你第一個的願望吧");
+            setTimeout(() => {
+                alert("說出你第二個的願望吧");
+                setTimeout(() => {
+                    alert("第三個的願望呢，當然要藏在心裡");
+                    setTimeout(() => {
+                        showTypingMessage("生日快樂啊 🎂🎉");
+                    }, 300); // 小停頓再打字機效果
+                }, 300);
+            }, 300);
+        }, 300);
     } else {
-        alert("拜託聊一下啦💔"); 
+        alert("拜託聊一下啦💔");
     }
+}
+
+// 打字機效果函數
+function showTypingMessage(message) {
+    // 建一個div來顯示訊息
+    const typingDiv = document.createElement('div');
+    typingDiv.style.position = 'fixed';
+    typingDiv.style.top = '40%';
+    typingDiv.style.left = '50%';
+    typingDiv.style.transform = 'translate(-50%, -50%)';
+    typingDiv.style.background = 'rgba(255, 255, 255, 0.9)';
+    typingDiv.style.padding = '20px';
+    typingDiv.style.borderRadius = '10px';
+    typingDiv.style.fontSize = '24px';
+    typingDiv.style.fontFamily = 'monospace';
+    typingDiv.style.color = '#000';
+    typingDiv.style.zIndex = '9999';
+    document.body.appendChild(typingDiv);
+
+    let index = 0;
+    const interval = setInterval(() => {
+        if (index < message.length) {
+            typingDiv.textContent += message.charAt(index);
+            index++;
+        } else {
+            clearInterval(interval);
+        }
+    }, 150); // 每150ms打一個字
 }
 
 function gameLoop() {
     if (needToShowWallDialogue) {
         needToShowWallDialogue = false;
-        alert("沒這麼容易給你逃走！");
+        alert("就這麼想回去上個地圖啊！");
         window.location.href = "index.html"; // ✨ 加這行轉跳！
     }
     requestAnimationFrame(gameLoop);
