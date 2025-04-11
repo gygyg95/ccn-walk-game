@@ -169,12 +169,24 @@ function moveLeft() {
     draw();
 }
 
-function moveRight() {
+function moveLeft() {
     playBGM();
-    x += speed;
-    if (x > canvas.width - 80) x = canvas.width - 80;
+    x -= speed;
+    if (x <= 0) {
+        if (!leftWallDialogueCooldown) {
+            x = 0;
+            leftWallDialogueCooldown = true;
+            alert("沒這麼容易給你逃走！");
+            setTimeout(() => {
+                leftWallDialogueCooldown = false;
+            }, 3000); // 冷卻3秒才允許再次觸發
+        } else {
+            x = 0;
+        }
+    }
     draw();
 }
+
 
 function showDialogue() {
     let choice = confirm("你遇到一隻迷路的相機怪人了！\n要跟他聊天嗎？\n(取消=快步逃跑 / 確定=阿哩喜勒靠)");
