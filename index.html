@@ -50,7 +50,7 @@
     <button onclick="moveRight()">→</button>
 </div>
 
-<audio id="bgm" src="assets/bgm.mp3" autoplay loop></audio>
+<audio id="bgm" src="assets/bgm.mp3" loop></audio>
 
 <script>
 const canvas = document.getElementById('gameCanvas');
@@ -59,15 +59,16 @@ let character = new Image();
 character.src = 'assets/character.png';
 let tree = new Image();
 tree.src = 'assets/tree.png';
+let bgm = document.getElementById('bgm');
 let x = 100;
 let y = 300;
 let speed = 5;
 let dialogueShown = false;
+let bgmPlayed = false;
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.8;
 
-// 繪圖函式
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(character, x, y, 80, 80);
@@ -79,19 +80,28 @@ function draw() {
     }
 }
 
-// 移動控制
+// 手動觸發背景音樂播放
+function playBGM() {
+    if (!bgmPlayed) {
+        bgm.play();
+        bgmPlayed = true;
+    }
+}
+
 function moveLeft() {
+    playBGM();
     x -= speed;
     if (x < 0) x = 0;
     draw();
 }
+
 function moveRight() {
+    playBGM();
     x += speed;
     if (x > canvas.width - 80) x = canvas.width - 80;
     draw();
 }
 
-// 劇情觸發
 function showDialogue() {
     let choice = confirm("你遇到一隻迷路的小貓咪！\n要抱起來帶走嗎？\n(確定=抱走 / 取消=幫牠找主人)");
     if (choice) {
