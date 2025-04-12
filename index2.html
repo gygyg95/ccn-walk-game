@@ -89,6 +89,7 @@ let treeMoveDistance = 0;
 let currentTreeImage = tree;
 let leftWallDialogueCooldown = false;
 let needToShowWallDialogue = false;
+let needToShowRightWallDialogue = false;
 let treeY = 250;
 let storyLocked = false; //  劇情鎖聊天後開啟
 
@@ -234,9 +235,19 @@ function moveLeft() {
 function moveRight() {
     playBGM();
     x += speed;
-    if (x > canvas.width - 80) x = canvas.width - 80;
+    if (x > canvas.width - 80) {
+        x = canvas.width - 80;
+        if (!rightWallDialogueCooldown) {
+            rightWallDialogueCooldown = true;
+            needToShowRightWallDialogue = true;
+            setTimeout(() => {
+                rightWallDialogueCooldown = false;
+            }, 3000);
+        }
+    }
     draw();
 }
+
 
 function showDialogue() {
     let choice = confirm("你又遇到一隻迷路的怪人了！\n要跟他聊天嗎？\n(確定=喜勒衝幹 / 取消=快步逃跑)"); 
@@ -345,6 +356,12 @@ function gameLoop() {
         alert("就這麼想回去上個地圖啊！");
         window.location.href = "index.html"; // ✨ 加這行轉跳！
     }
+if (needToShowRightWallDialogue) {
+    needToShowRightWallDialogue = false;
+    alert("恭喜發現隱藏地圖！");
+    window.location.href = "index3.html";
+}
+
     requestAnimationFrame(gameLoop);
 }
 
