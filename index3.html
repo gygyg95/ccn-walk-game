@@ -309,8 +309,10 @@ function flashTreeForeverEffect() {
 function gameLoop() {
     if (needToShowWallDialogue) {
         needToShowWallDialogue = false;
-        alert("就這麼想回去上個地圖啊！");
-        window.location.href = "index2.html";
+        const confirmResult = confirm("確定要回去上個地圖嗎？");
+        if (confirmResult) {
+            window.location.href = "index2.html";
+        }
     }
     requestAnimationFrame(gameLoop);
 }
