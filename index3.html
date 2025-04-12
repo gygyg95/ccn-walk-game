@@ -14,24 +14,16 @@ body {
     align-items: center;
     touch-action: manipulation;
 }
-#gameCanvas, #fireworkCanvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-}
 #gameCanvas {
-    z-index: 1;
-}
-#fireworkCanvas {
-    z-index: 2;
-    pointer-events: none; /* ✨ 讓煙火Canvas不擋到按鈕 */
+    background: url('assets3/grass_bg.png') repeat;
+    background-size: cover;
+    width: 100%;
+    height: 80vh;
 }
 .controls {
-    position: relative;
-    z-index: 3;
     display: flex;
     justify-content: center;
-    margin-top: 80vh;
+    margin-top: 10px;
     gap: 20px;
 }
 button {
@@ -58,8 +50,6 @@ button:active {
 <body>
 
 <canvas id="gameCanvas"></canvas>
-<canvas id="fireworkCanvas"></canvas>
-
 <div class="controls">
     <button onclick="moveLeft()">⇦</button>
     <button onclick="moveRight()">⇨</button>
@@ -70,9 +60,6 @@ button:active {
 <script>
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-
-const fireworkCanvas = document.getElementById('fireworkCanvas');
-const fireCtx = fireworkCanvas.getContext('2d');
 
 // 角色圖
 const character = new Image();
@@ -108,12 +95,9 @@ let needToShowWallDialogue = false;
 let treeSpecialEffectActive = false;
 let isTypingMessage = false;
 let treeForeverFlash = false;
-let fireworks = [];
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight * 0.8;
-fireworkCanvas.width = window.innerWidth;
-fireworkCanvas.height = window.innerHeight * 0.8;
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -206,7 +190,7 @@ function moveRight() {
     draw();
 }
 
-// ✨ 碰到樹後觸發打字、煙火
+// 碰到樹後觸發打字，並永久tree5/4
 function showDialogue() {
     if (treeForeverFlash) return;
     treeSpecialEffectActive = true;
@@ -224,6 +208,7 @@ By 妳的大粉絲`);
     }, 1000);
 }
 
+// 打字機 + 保留淡淡文字 + 無限煙火
 function showTypingMessage(message) {
     isTypingMessage = true;
 
@@ -254,26 +239,28 @@ function showTypingMessage(message) {
         } else {
             clearInterval(interval);
             setTimeout(() => {
-                typingDiv.style.opacity = '0.5'; 
+                typingDiv.style.opacity = '0.5';
                 isTypingMessage = false;
-                startFireworks(); // ✨ 無限放煙火
+                triggerFireworks(); // 開始無限煙火
             }, 1000);
         }
     }, 100);
 }
 
-function startFireworks() {
-    setInterval(() => {
-        createSingleFirework();
-    }, 300); // 每0.3秒放一組煙火
+// 無限放煙火
+function triggerFireworks() {
+    createSingleFirework();
+    setTimeout(triggerFireworks, 500); // 每0.5秒持續放煙火
 }
 
 function createSingleFirework() {
     const colors = ['#ff4c4c', '#ffd93d', '#3dd9ff', '#8c52ff', '#ff6ec7'];
-    const fireworkX = Math.random() * fireworkCanvas.width;
-    const fireworkY = Math.random() * fireworkCanvas.height / 2;
+    const fireworkX = Math.random() * canvas.width;
+    const fireworkY = Math.random() * canvas.height / 2;
+    const particles = [];
+
     for (let i = 0; i < 30; i++) {
-        fireworks.push({
+        particles.push({
             x: fireworkX,
             y: fireworkY,
             radius: 2 + Math.random() * 2,
@@ -283,26 +270,35 @@ function createSingleFirework() {
             alpha: 1
         });
     }
+
+    function animateFirework() {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(currentCharacterImage, x, y, 80, 80);
+        ctx.drawImage(currentTreeImage, treeX, treeY + treeMoveDistance, 80, 80);
+
+        particles.forEach(p => {
+            p.x += Math.cos(p.angle) * p.speed;
+            p.y += Math.sin(p.angle) * p.speed;
+            p.alpha -= 0.02;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(p.alpha, 0);
+            ctx.fill();
+        });
+
+        ctx.restore();
+
+        if (particles.some(p => p.alpha > 0)) {
+            requestAnimationFrame(animateFirework);
+        }
+    }
+    animateFirework();
 }
 
-function animateFireworks() {
-    fireCtx.clearRect(0, 0, fireworkCanvas.width, fireworkCanvas.height);
-    fireCtx.globalCompositeOperation = 'lighter';
-    fireworks.forEach((p, index) => {
-        p.x += Math.cos(p.angle) * p.speed;
-        p.y += Math.sin(p.angle) * p.speed;
-        p.alpha -= 0.02;
-        fireCtx.beginPath();
-        fireCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        fireCtx.fillStyle = p.color;
-        fireCtx.globalAlpha = Math.max(p.alpha, 0);
-        fireCtx.fill();
-    });
-    fireworks = fireworks.filter(p => p.alpha > 0);
-    fireCtx.globalAlpha = 1;
-    requestAnimationFrame(animateFireworks);
-}
-
+// 永久tree5/4閃爍
 function flashTreeForeverEffect() {
     setInterval(() => {
         currentTreeImage = (currentTreeImage === tree5) ? tree6 : tree5;
@@ -326,7 +322,6 @@ randomTreeEffect();
 randomCharacterEffect();
 randomBgEffect();
 gameLoop();
-animateFireworks(); // 煙火動畫循環
 </script>
 
 </body>
