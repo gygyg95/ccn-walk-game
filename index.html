@@ -5,43 +5,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>🎃</title>
 <style>
-    body {
-        margin: 0;
-        overflow: hidden;
-        background: #000;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        touch-action: manipulation; /* ✨ 加這行，防止連點放大 */
-    }
-    #gameCanvas {
-        background: url('assets/grass_bg.png') repeat;
-        background-size: cover;
-        width: 100%;
-        height: 80vh;
-    }
-    .controls {
-        display: flex;
-        justify-content: center;
-        margin-top: 10px;
-    }
-    button {
-        width: 80px;
-        height: 80px;
-        margin: 10px;
-        border-radius: 50%;
-        border: none;
-        font-size: 32px;
-        font-weight: bold;
-        background: #ffffff;
-        box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-        transition: background 0.3s, transform 0.2s;
-    }
-    button:active {
-        background: #e0f7fa;
-        transform: scale(0.95);
-    }
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    touch-action: manipulation;
+}
+#gameCanvas {
+    background: url('assets/grass_bg.png') repeat;
+    background-size: cover;
+    width: 100%;
+    height: 80vh;
+}
+.controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    gap: 20px; /* 按鈕之間有間距 */
+}
+button {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: none;
+    background: #ffffff;
+    box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+    transition: background 0.3s, transform 0.2s;
+    font-size: 32px;
+    font-weight: bold;
+    display: flex; /* ✨讓文字居中用flex */
+    align-items: center; /* ✨垂直置中 */
+    justify-content: center; /* ✨水平置中 */
+    padding: 0; /* 避免有內間距偏掉 */
+}
+button:active {
+    background: #e0f7fa;
+    transform: scale(0.95);
+}
 </style>
+
 </head>
 <body>
 
