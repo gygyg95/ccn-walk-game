@@ -12,7 +12,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        touch-action: manipulation; /* ✨ 加這行，防止連點放大 */
+        touch-action: manipulation; /*  防止連點放大 */
     }
     #gameCanvas {
         background: url('assets2/grass_bg.png') repeat;
@@ -63,7 +63,7 @@ let character = new Image();
 character.src = 'assets2/character.png';
 let character2 = new Image();
 character2.src = 'assets2/character2.png';
-let currentCharacterImage = character;  // ✨目前顯示的角色圖
+let currentCharacterImage = character;  // 目前顯示的角色圖
 
 
 
@@ -85,7 +85,7 @@ let currentTreeImage = tree;
 let leftWallDialogueCooldown = false;
 let needToShowWallDialogue = false;
 let treeY = 250;
-let storyLocked = false; // ✨ 劇情鎖，聊天後開啟
+let storyLocked = false; //  劇情鎖聊天後開啟
 
 
 canvas.width = window.innerWidth;
@@ -107,7 +107,7 @@ function dropTree(callback) {
         if (progress < 1) {
             requestAnimationFrame(animateDrop);
         } else {
-            callback(); // ✨ 下降完成後，執行callback（=啟動左右搖）
+            callback(); // 下降完成後，執行callback（=啟動左右搖）
         }
     }
 
@@ -138,7 +138,7 @@ function animateTree() {
         treeDirection *= -1;
     }
     draw();
-    requestAnimationFrame(animateTree); // ✨ 注意只自己呼叫自己
+    requestAnimationFrame(animateTree); // 注意只自己呼叫自己
 }
 
 function randomTreeEffect() {
@@ -294,11 +294,11 @@ function showTypingMessage(message) {
         } else {
             clearInterval(interval);
             setTimeout(() => {
-                typingDiv.style.opacity = '0'; // ✨ 觸發淡出
+                typingDiv.style.opacity = '0'; //  觸發淡出
                 setTimeout(() => {
-                    typingDiv.remove();          // ✨ 淡出完刪除元素
-                    spawnHearts();               // ✨ 淡出完觸發小愛心
-                    isTypingMessage = false;     // ✨ 解除鎖定
+                    typingDiv.remove();          //  淡出完刪除元素
+                    spawnHearts();               //  淡出完觸發小愛心
+                    isTypingMessage = false;     //  解除鎖定
                 }, 1000);
             }, 1000);
         }
@@ -306,7 +306,7 @@ function showTypingMessage(message) {
 }
 
 function spawnHearts() {
-    for (let i = 0; i < 30; i++) {  // ✨ 產生20個愛心
+    for (let i = 0; i < 30; i++) {  //  產生n個愛心
         const heart = document.createElement('div');
         heart.textContent = '❤️';
         heart.style.position = 'fixed';
@@ -347,11 +347,11 @@ function gameLoop() {
 
 draw();
 dropTree(() => {
-    animateTree();  // 樹下降完，開始搖動
+    animateTree();  // 開始搖動
 });
 randomTreeEffect();
 randomBgEffect();
-randomCharacterEffect(); // ✨ 新加這行，讓角色可以隨機閃現
+randomCharacterEffect(); //  新加這行，讓角色可以隨機閃現
 gameLoop();
 </script>
 
