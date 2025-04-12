@@ -252,12 +252,12 @@ function showDialogue() {
                     setTimeout(() => {
                         alert("我也有一些話想說呢");
                         setTimeout(() => {
-                            showTypingMessage(嘿📑🐟生日快樂啊🎂🎉～
+                            showTypingMessage(`嘿📑🐟生日快樂啊🎂🎉～
                                                 希望妳可以一直平平安安，快快樂樂。
                                                 我知道妳是偶爾會半夜破防的人，所以真的有壓力的時候，要好好地釋放，不要一個人悶著。
                                                 同時呢也要記得，相信自己。妳是我認識的人裡，最認真最棒的那一個。
                                                 在這裡默默祝福妳，新的一年也要繼續帥氣、繼續開心，也可以偶爾…偷懶一下沒關係。
-                                                晚點有空再來吵妳，今天是妳的專屬光環日～✌️);
+                                                晚點有空再來吵妳，今天是妳的專屬光環日～✌️`);
                         }, 50); // 小停頓再打字機效果
                     }, 50); // 小停頓再打字機效果
                 }, 50);
@@ -318,7 +318,7 @@ function spawnHearts() {
         heart.style.left = '50%';
         heart.style.top = '50%';
         heart.style.transform = 'translate(-50%, -50%)';
-        heart.style.fontSize = ${Math.random() * 20 + 20}px; // 20~40px隨機大小
+        heart.style.fontSize = `${Math.random() * 20 + 20}px`; // 20~40px隨機大小
         heart.style.opacity = '1';
         heart.style.transition = 'all 2s ease';
         heart.style.zIndex = '9999';
@@ -328,7 +328,7 @@ function spawnHearts() {
         const randomY = -(Math.random() * 300 + 200); // 往上飄
 
         setTimeout(() => {
-            heart.style.transform = translate(${randomX}px, ${randomY}px);
+            heart.style.transform = `translate(${randomX}px, ${randomY}px)`;
             heart.style.opacity = '0';
         }, 100);
 
