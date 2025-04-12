@@ -306,7 +306,7 @@ function showTypingMessage(message) {
 }
 
 function spawnHearts() {
-    for (let i = 0; i < 20; i++) {  // ✨ 產生20個愛心
+    for (let i = 0; i < 30; i++) {  // ✨ 產生20個愛心
         const heart = document.createElement('div');
         heart.textContent = '❤️';
         heart.style.position = 'fixed';
@@ -329,7 +329,7 @@ function spawnHearts() {
 
         setTimeout(() => {
             heart.remove();
-        }, 2100);
+        }, 3000);
     }
 }
 
